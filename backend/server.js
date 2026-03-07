@@ -87,7 +87,9 @@
 // });
 
 
-// server.js
+
+
+
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -97,7 +99,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session); // v3 syntax
+const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const userRouter = require("./routes/user.js");
@@ -105,58 +107,56 @@ const ListingRouter = require("./routes/listing.js");
 const ReviewRouter = require("./routes/review.js");
 const User = require("./models/user.js");
 
-// ---------- ENV VARIABLES ----------
-const dbUrl = process.env.ATLASDB_URL;       // MongoDB Atlas
-const JWT_SECRET = process.env.SECRET;       // Session secret
-const PORT = process.env.PORT || 8000;       // Render automatically assigns PORT
+// --- CORS ---
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stayhub-frontend-ib8c.onrender.com"
+];
 
-// ---------- DATABASE ----------
-mongoose.connect(dbUrl)
-  .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((err) => console.log("MongoDB connection error:", err));
-
-// ---------- CORS ----------
 app.use(cors({
-  origin: process.env.NODE_ENV === "production"
-    ? "https://stayhub-frontend-ib8c.onrender.com" // replace with deployed frontend URL
-    : "http://localhost:5173",
-  credentials: true,
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
 }));
 
-// ---------- BODY PARSER ----------
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// --- Connect to MongoDB ---
+mongoose.connect(process.env.ATLASDB_URL)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch(err => console.log("MongoDB connection error:", err));
 
-// ---------- SESSION ----------
-const store = new MongoStore({
-  url: dbUrl,       // MongoStore v3 syntax
-  secret: JWT_SECRET,
-  touchAfter: 24 * 3600,
+// --- Session store ---
+const store = MongoStore.create({
+  mongoUrl: process.env.ATLASDB_URL,
+  crypto: { secret: process.env.SECRET },
+  touchAfter: 24 * 3600
 });
 
-store.on("error", (err) => {
-  console.log("SESSION STORE ERROR", err);
-});
+store.on("error", (err) => console.log("MongoStore error:", err));
 
 app.use(session({
   store,
-  secret: JWT_SECRET,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: {
+  cookie: { 
     httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  },
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
 }));
 
-// ---------- PASSPORT AUTH ----------
+// --- Passport setup ---
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// ---------- ROUTES ----------
+// --- Routes ---
 app.use("/listings", ListingRouter);
 app.use("/listings/:id/reviews", ReviewRouter);
 app.use("/user", userRouter);
@@ -166,7 +166,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// ---------- START SERVER ----------
+// --- Listen ---
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
