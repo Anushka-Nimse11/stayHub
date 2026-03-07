@@ -118,7 +118,7 @@ mongoose.connect(dbUrl)
 // ---------- CORS ----------
 app.use(cors({
   origin: process.env.NODE_ENV === "production"
-    ? "https://stayhub-frontend.onrender.com" // replace with deployed frontend URL
+    ? "https://stayhub-frontend-ib8c.onrender.com" // replace with deployed frontend URL
     : "http://localhost:5173",
   credentials: true,
 }));
