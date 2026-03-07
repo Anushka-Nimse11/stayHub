@@ -88,17 +88,17 @@
 
 
 
-
+// server.js
 if (process.env.NODE_ENV !== "production") {
-  require('dotenv').config();
+  require("dotenv").config();
 }
 
 const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo")(session); // v3 syntax
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const userRouter = require("./routes/user.js");
@@ -106,78 +106,66 @@ const ListingRouter = require("./routes/listing.js");
 const ReviewRouter = require("./routes/review.js");
 const User = require("./models/user.js");
 
-// Database
-const dbUrl = process.env.ATLASDB_URL;
+// ---------- ENV VARIABLES ----------
+const dbUrl = process.env.MONGO_URL;        // MongoDB Atlas URL
+const JWT_SECRET = process.env.JWT_SECRET;  // Secret for session
+const PORT = process.env.PORT || 8000;      // Render assigns PORT automatically
 
-async function main() {
-  await mongoose.connect(dbUrl);
-}
-main()
-  .then(() => console.log("Connected to DB"))
-  .catch(err => console.log(err));
+// ---------- DATABASE ----------
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("Connected to MongoDB Atlas"))
+.catch((err) => console.log("MongoDB connection error:", err));
 
-// ------------------------
-// CORS Setup
-// ------------------------
-const allowedOrigins = process.env.NODE_ENV === "production"
-  ? ["https://stayhub-frontend-ib8c.onrender.com"]  // deployed frontend
-  : ["http://localhost:5173"];                       // local frontend
+// ---------- CORS ----------
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://stayhub-frontend.onrender.com" // replace with deployed frontend URL
+        : "http://localhost:5173", // local frontend during dev
+    credentials: true,
+  })
+);
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // allow Postman or curl requests
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `CORS policy does not allow access from this origin: ${origin}`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true // allow cookies
-}));
-
-// ------------------------
-// Body parser
-// ------------------------
+// ---------- BODY PARSER ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ------------------------
-// MongoDB Session Store
-// ------------------------
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: { secret: process.env.SECRET },
+// ---------- SESSION ----------
+const store = new MongoStore({
+  url: dbUrl,         // v3 syntax
+  secret: JWT_SECRET,
   touchAfter: 24 * 3600,
 });
 
-store.on("error", err => console.log("MongoStore Error:", err));
+store.on("error", (err) => {
+  console.log("SESSION STORE ERROR", err);
+});
 
-// ------------------------
-// Session
-// ------------------------
-app.use(session({
-  store,
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  }
-}));
+app.use(
+  session({
+    store,
+    secret: JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    },
+  })
+);
 
-// ------------------------
-// Passport Authentication
-// ------------------------
+// ---------- PASSPORT AUTH ----------
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// ------------------------
-// Routes
-// ------------------------
+// ---------- ROUTES ----------
 app.use("/listings", ListingRouter);
 app.use("/listings/:id/reviews", ReviewRouter);
 app.use("/user", userRouter);
@@ -187,10 +175,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ------------------------
-// Start server
-// ------------------------
-const PORT = process.env.PORT || 8000;
+// ---------- START SERVER ----------
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
