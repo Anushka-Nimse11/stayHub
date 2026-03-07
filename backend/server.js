@@ -87,7 +87,6 @@
 // });
 
 
-
 // server.js
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -107,28 +106,22 @@ const ReviewRouter = require("./routes/review.js");
 const User = require("./models/user.js");
 
 // ---------- ENV VARIABLES ----------
-const dbUrl = process.env.MONGO_URL;        // MongoDB Atlas URL
-const JWT_SECRET = process.env.JWT_SECRET;  // Secret for session
-const PORT = process.env.PORT || 8000;      // Render assigns PORT automatically
+const dbUrl = process.env.ATLASDB_URL;       // MongoDB Atlas
+const JWT_SECRET = process.env.SECRET;       // Session secret
+const PORT = process.env.PORT || 8000;       // Render automatically assigns PORT
 
 // ---------- DATABASE ----------
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("Connected to MongoDB Atlas"))
-.catch((err) => console.log("MongoDB connection error:", err));
+mongoose.connect(dbUrl)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => console.log("MongoDB connection error:", err));
 
 // ---------- CORS ----------
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://stayhub-frontend.onrender.com" // replace with deployed frontend URL
-        : "http://localhost:5173", // local frontend during dev
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: process.env.NODE_ENV === "production"
+    ? "https://stayhub-frontend.onrender.com" // replace with deployed frontend URL
+    : "http://localhost:5173",
+  credentials: true,
+}));
 
 // ---------- BODY PARSER ----------
 app.use(express.json());
@@ -136,7 +129,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ---------- SESSION ----------
 const store = new MongoStore({
-  url: dbUrl,         // v3 syntax
+  url: dbUrl,       // MongoStore v3 syntax
   secret: JWT_SECRET,
   touchAfter: 24 * 3600,
 });
@@ -145,18 +138,16 @@ store.on("error", (err) => {
   console.log("SESSION STORE ERROR", err);
 });
 
-app.use(
-  session({
-    store,
-    secret: JWT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    },
-  })
-);
+app.use(session({
+  store,
+  secret: JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+}));
 
 // ---------- PASSPORT AUTH ----------
 app.use(passport.initialize());
