@@ -15,8 +15,8 @@ function ReviewList({ reviews = [], currUser, setListing, listingId }) {
 
     try {
       await axios.delete(
-        `http://localhost:8000/listings/${listingId}/reviews/${reviewId}`,
-        { withCredentials: true }
+        `https://stayhubproject.onrender.com/listings/${listingId}/reviews/${reviewId}`,
+        { withCredentials: true },
       );
 
       setListing((prev) => ({

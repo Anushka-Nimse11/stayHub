@@ -25,9 +25,13 @@ function Login({ setCurrUser }) {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/user/login", form, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "https://stayhubproject.onrender.com/user/login",
+        form,
+        {
+          withCredentials: true,
+        },
+      );
 
       // IMPORTANT: update user state
       setCurrUser(res.data.user);

@@ -29,7 +29,7 @@ function Edit({ currUser, authLoading }) {
     }
 
     axios
-      .get(`http://localhost:8000/listings/${id}`, {
+      .get(`https://stayhubproject.onrender.com/listings/${id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -47,7 +47,7 @@ function Edit({ currUser, authLoading }) {
         // set original image URL
         if (listingData.image?.url) {
           setOriginalImageUrl(
-            listingData.image.url.replace("/upload", "/upload/w_250")
+            listingData.image.url.replace("/upload", "/upload/w_250"),
           );
         }
       })
@@ -85,7 +85,7 @@ function Edit({ currUser, authLoading }) {
     }
 
     axios
-      .put(`http://localhost:8000/listings/${id}`, formData, {
+      .put(`https://stayhubproject.onrender.com/listings/${id}`, formData, {
         withCredentials: true,
       })
       .then(() => {

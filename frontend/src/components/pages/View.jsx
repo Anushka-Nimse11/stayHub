@@ -359,9 +359,12 @@ function View({ currUser }) {
   // Fetch listing
   const fetchListing = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/listings/${id}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `https://stayhubproject.onrender.com/listings/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
       setListing(res.data);
     } catch (err) {
       console.log("Error fetching listing:", err);
@@ -384,7 +387,9 @@ function View({ currUser }) {
       return;
 
     try {
-      await axios.delete(`http://localhost:8000/listings/delete/${id}`);
+      await axios.delete(
+        `https://stayhubproject.onrender.com/listings/delete/${id}`,
+      );
       alert("Listing deleted successfully");
       navigate("/");
     } catch (err) {
@@ -416,9 +421,9 @@ function View({ currUser }) {
 
     try {
       await axios.post(
-        `http://localhost:8000/listings/${id}/reviews`,
+        `https://stayhubproject.onrender.com/listings/${id}/reviews`,
         { ...addReviews, rating: Number(rating) },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       alert("Review added");
       fetchListing();

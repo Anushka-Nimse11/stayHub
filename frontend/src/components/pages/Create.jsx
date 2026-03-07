@@ -50,7 +50,7 @@ function Create() {
     formData.append("image", image);
 
     axios
-      .post("http://localhost:8000/listings", formData, {
+      .post("https://stayhubproject.onrender.com/listings", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

@@ -7,7 +7,7 @@ function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/listings", {
+      .get("https://stayhubproject.onrender.com/listings", {
         withCredentials: true,
       })
       .then((res) => setListings(res.data))

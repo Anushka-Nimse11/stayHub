@@ -45,7 +45,9 @@ function App() {
   // Check if user is already logged in
   useEffect(() => {
     axios
-      .get("http://localhost:8000/user/current", { withCredentials: true }) // ✅ important
+      .get("https://stayhubproject.onrender.com/user/current", {
+        withCredentials: true,
+      }) // ✅ important
       .then((res) => {
         console.log("Logged in user:", res.data.user);
         setCurrUser(res.data.user);

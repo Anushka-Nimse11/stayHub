@@ -97,9 +97,9 @@ function Navbar({ currUser, setCurrUser }) {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:8000/user/logout",
+        "https://stayhubproject.onrender.com/user/logout",
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setCurrUser(null);
       navigate("/"); // redirect to home after logout
