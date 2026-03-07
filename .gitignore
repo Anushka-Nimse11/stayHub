@@ -1,9 +1,25 @@
-# Backend
-backend/node_modules/
-backend/.env
 
-# Frontend
+# dependencies
+node_modules/
+
+# environment variables
+.env
+
+# build files
+dist/
+build/
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# frontend node modules
 frontend/node_modules/
 
-# General
-.env
+# backend node modules
+backend/node_modules/
