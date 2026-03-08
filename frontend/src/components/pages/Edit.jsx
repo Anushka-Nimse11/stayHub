@@ -29,7 +29,7 @@ function Edit({ currUser, authLoading }) {
     }
 
     axios
-      .get(`https://stayhubproject.onrender.com/listings/${id}`, {
+      .get(`https://stayhubbackend-o4g2.onrender.com/listings/${id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -85,9 +85,13 @@ function Edit({ currUser, authLoading }) {
     }
 
     axios
-      .put(`https://stayhubproject.onrender.com/listings/${id}`, formData, {
-        withCredentials: true,
-      })
+      .put(
+        `https://stayhubbackend-o4g2.onrender.com/listings/${id}`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      )
       .then(() => {
         alert("Listing Updated successfully");
         navigate(`/listings/${id}`, { replace: true });

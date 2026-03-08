@@ -97,7 +97,7 @@ function Navbar({ currUser, setCurrUser }) {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "https://stayhubproject.onrender.com/user/logout",
+        "https://stayhubbackend-o4g2.onrender.com/user/logout",
         {},
         { withCredentials: true },
       );

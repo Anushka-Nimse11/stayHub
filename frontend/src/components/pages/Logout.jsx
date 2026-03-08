@@ -5,7 +5,7 @@ function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await axios.get("https://stayhubproject.onrender.com/user/logout", {
+    await axios.get("https://stayhubbackend-o4g2.onrender.com/user/logout", {
       withCredentials: true,
     });
     localStorage.removeItem("currUser"); // Remove user

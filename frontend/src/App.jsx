@@ -45,7 +45,7 @@ function App() {
   // Check if user is already logged in
   useEffect(() => {
     axios
-      .get("https://stayhubproject.onrender.com/user/current", {
+      .get("https://stayhubbackend-o4g2.onrender.com/user/current", {
         withCredentials: true,
       }) // ✅ important
       .then((res) => {

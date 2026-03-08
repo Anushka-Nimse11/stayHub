@@ -360,7 +360,7 @@ function View({ currUser }) {
   const fetchListing = async () => {
     try {
       const res = await axios.get(
-        `https://stayhubproject.onrender.com/listings/${id}`,
+        `https://stayhubbackend-o4g2.onrender.com/listings/${id}`,
         {
           withCredentials: true,
         },
@@ -388,7 +388,7 @@ function View({ currUser }) {
 
     try {
       await axios.delete(
-        `https://stayhubproject.onrender.com/listings/delete/${id}`,
+        `https://stayhubbackend-o4g2.onrender.com/listings/delete/${id}`,
       );
       alert("Listing deleted successfully");
       navigate("/");
@@ -421,7 +421,7 @@ function View({ currUser }) {
 
     try {
       await axios.post(
-        `https://stayhubproject.onrender.com/listings/${id}/reviews`,
+        `https://stayhubbackend-o4g2.onrender.com/listings/${id}/reviews`,
         { ...addReviews, rating: Number(rating) },
         { withCredentials: true },
       );

@@ -26,7 +26,7 @@ function Login({ setCurrUser }) {
 
     try {
       const res = await axios.post(
-        "https://stayhubproject.onrender.com/user/login",
+        "https://stayhubbackend-o4g2.onrender.com/user/login",
         form,
         {
           withCredentials: true,

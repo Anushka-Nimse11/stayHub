@@ -29,7 +29,7 @@ function SignUp() {
     }
 
     axios
-      .post("https://stayhubproject.onrender.com/user/signup", addUser, {
+      .post("https://stayhubbackend-o4g2.onrender.com/user/signup", addUser, {
         withCredentials: true,
       })
       .then(() => {
