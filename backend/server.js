@@ -132,8 +132,10 @@ mongoose.connect(process.env.ATLASDB_URL)
 // --- Session store ---
 const store = MongoStore.create({
   mongoUrl: process.env.ATLASDB_URL,
-  crypto: { secret: process.env.SECRET },
-  touchAfter: 24 * 3600
+  crypto: {
+    secret: process.env.SECRET, // optional: encrypts session data
+  },
+  touchAfter: 24 * 3600, // reduces writes
 });
 
 store.on("error", (err) => console.log("MongoStore error:", err));
