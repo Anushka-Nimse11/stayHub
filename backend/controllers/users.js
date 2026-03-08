@@ -16,7 +16,7 @@ module.exports.signUp = async (req, res) =>{
       });
     }
     
-        const newUser = User({email, username});
+        const newUser = new User({email, username});
         const registeredUser = await User.register(newUser, password);
     res.status(201).json(registeredUser);
     }
