@@ -97,6 +97,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const app = express();
 const cors = require("cors");
+app.set("trust proxy", 1);
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -132,6 +133,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // --- Connect to MongoDB ---
 mongoose.connect(process.env.ATLASDB_URL)
