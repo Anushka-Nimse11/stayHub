@@ -44,10 +44,13 @@ function App() {
 
   // Check if user is already logged in
   useEffect(() => {
+    // axios
+    //   .get("https://stayhubbackend-o4g2.onrender.com/user/current", {
+    //     withCredentials: true,
+    //   }) // ✅ important
+
     axios
-      .get("https://stayhubbackend-o4g2.onrender.com/user/current", {
-        withCredentials: true,
-      }) // ✅ important
+      .get("/user/current")
       .then((res) => {
         console.log("Logged in user:", res.data.user);
         setCurrUser(res.data.user);
