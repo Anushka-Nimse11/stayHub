@@ -99,7 +99,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo")(session);
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const userRouter = require("./routes/user.js");
@@ -130,12 +130,10 @@ mongoose.connect(process.env.ATLASDB_URL)
   .catch(err => console.log("MongoDB connection error:", err));
 
 // --- Session store ---
-const store = MongoStore.create({
-  mongoUrl: process.env.ATLASDB_URL,
-  crypto: {
-    secret: process.env.SECRET, // optional: encrypts session data
-  },
-  touchAfter: 24 * 3600, // reduces writes
+const store = new MongoStore({
+  mongooseConnection: mongoose.connection,
+  secret: process.env.SECRET,
+  touchAfter: 24 * 3600,
 });
 
 store.on("error", (err) => console.log("MongoStore error:", err));
