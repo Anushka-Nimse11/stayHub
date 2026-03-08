@@ -108,21 +108,30 @@ const ReviewRouter = require("./routes/review.js");
 const User = require("./models/user.js");
 
 // --- CORS ---
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://stayhub-frontend-ib8c.onrender.com"
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://stayhub-frontend-ib8c.onrender.com"
+// ];
+
+// app.use(cors({
+//   origin: function(origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true
+// }));
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://stayhub-frontend-ib8c.onrender.com"
+  ],
   credentials: true
 }));
+
 
 // --- Connect to MongoDB ---
 mongoose.connect(process.env.ATLASDB_URL)
